@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule, {
+  // Create the HTTP server
+  const app = await NestFactory.create(AppModule);
+
+  // Connect the microservice
+  app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
       urls: [process.env.RABBITMQ_URL],
@@ -14,7 +16,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen();
-  console.log('🚀 Mail Service is listening to RabbitMQ...');
+  await app.startAllMicroservices();
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
