@@ -6,8 +6,9 @@ import { MailService } from './mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @EventPattern('send_email') // when publish message with pattern 'send_email'
+  @EventPattern('send_email')
   async handleSendEmail(@Payload() message: any) {
+    console.log('send here');
     await this.mailService.sendEmail(message);
   }
 }
